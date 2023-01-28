@@ -154,12 +154,9 @@
   )
 
 ;;; 主模式
-(use-package json-mode
-  :mode("\\.json'" . json-mode))
+(use-package json-mode)
 
-(use-package markdown-mode
-  :mode("\\.md\\'" . gfm-mode)
-  :init (setq markdown-command "multimarkdown"))
+(use-package markdown-mode)
 
 
 (provide 'init-packages)
