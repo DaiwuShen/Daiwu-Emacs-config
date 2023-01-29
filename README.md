@@ -1,11 +1,11 @@
 # Configurations for Emacs
 - [Description](#Description)
-- [init](#init.el)
-- [basic](#init-basic.el)
-- [funcs](#init-funcs.el)
-- [keybindings](#init-keybindings.el)
-- [packages](#init-packages.el)
-- [themes](#init-themes.el)
+- [init](#init)
+- [basic](#basic)
+- [funcs](#funcs)
+- [keybindings](#keybindings)
+- [packages](#packages)
+- [themes](#themes)
 
 ## Description
 ### Introduction
@@ -16,14 +16,14 @@ if you want to use these configurtions, you need clone the repository into your 
 git clone https://github.com/DaiwuShen/Daiwu-Emacs-config
 ```
 
-## init.el
+## init
 
-## init-basic.el
+## basic
 
-## init-funcs.el
+## funcs
 
-## init-keybindings.el
+## keybindings
 
-## init-packages.el
+## packages
 
-## init-themes.el
+## themes
