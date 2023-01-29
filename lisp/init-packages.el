@@ -26,8 +26,7 @@
 
 (use-package global-hl-line-mode
   :ensure nil
-  :hook (after-init . global-hl-line-mode)
-)
+  :hook (after-init . global-hl-line-mode))
   
 (use-package tool-bar-mode
   :ensure nil
@@ -100,9 +99,7 @@
 	("C-c t d" . treemacs-select-directory)
 	)
   (:map treemacs-mode-map
-	("/" . treemacs-advanced-helpful-hydra)
-	)
-)
+	("/" . treemacs-advanced-helpful-hydra)))
 
 ;; projectile
 (use-package projectile
@@ -111,8 +108,7 @@
   (setq projectile-mode-line "Projectile"
 	projectile-track-known-projects-automatically nil
 	projectile-enable-caching t)
-  :hook (after-init . projectile-mode)
-  )
+  :hook (after-init . projectile-mode))
 
 ;;
 (use-package treemacs-projectile
@@ -121,10 +117,8 @@
 ;; git
 (use-package magit)
 
-(use-package git-gutter+
-  :config
-  (progn
-    (global-git-gutter+-mode)))
+;; orderless
+(use-package orderless)
 
 ;;; 美化相关
 ;; dashboard
@@ -137,26 +131,34 @@
   (setq dashboard-items '((recents . 5)
 			  (bookmarks . 5)
 			  (projects . 5)))
-  (dashboard-setup-startup-hook)
-  )
+  (dashboard-setup-startup-hook))
 
 ;;; 补全相关
-;; company
-(use-package company
-  :hook(prog-mode . company-mode)
+;; corfu
+(use-package corfu
   :config
-  (setq company-minimum-prefix-length 1 ; 只需敲 1 个字母就开始进行自动补全
-	company-tooltip-align-annotations t
-	company-idle-delay 0.0;弹出列表延迟
-	company-show-numbers t ;; 给选项编号 (按快捷键 M-1、M-2 等等来进行选择).
-	company-selection-wrap-around t;列表循环
-	company-transformers '(company-sort-by-occurrence)) ; 根据选择的频率进行排序，读者如果不喜欢可以去掉
-  )
+  (setq corfu-auto t;; Enable auto completion
+        corfu-auto-delay 0
+        corfu-auto-prefix 0
+        completion-styles '(basic)
+	corfu-cycle t;; Enable cycling for `corfu-next/previous'
+	;; corfu-separator ?\s          ;; Orderless field separator	
+	corfu-quit-at-boundary nil   ;; Never quit at completion boundary
+	corfu-quit-no-match t      ;; Never quit, even if there is no match
+	corfu-preview-current nil    ;; Disable current candidate preview
+	corfu-preselect 'prompt      ;; Preselect the prompt
+	;; corfu-on-exact-match nil     ;; Configure handling of exact matches
+	corfu-scroll-margin 5        ;; Use scroll margin	
+	)
+  :hook ((prog-mode . corfu-mode)
+         (shell-mode . corfu-mode)
+         (eshell-mode . corfu-mode))
+  :bind (:map corfu-map
+	      ;; ("M-SPC" . corfu-insert-separator)
+	      ("SPC" . corfu-insert-separator)))
 
 ;;; 主模式
 (use-package json-mode)
-
 (use-package markdown-mode)
-
 
 (provide 'init-packages)

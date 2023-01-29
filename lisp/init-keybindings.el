@@ -16,8 +16,9 @@
 (global-set-key (kbd "C-x ;") 'embark--act);自适应context menu
 (global-set-key (kbd "C-s") 'consult-line)
 (global-set-key (kbd "C-x b") 'consult-buffer)
-(global-set-key (kbd "C-c C-/") 'comment-or-uncomment-region);快速注释
+(global-set-key (kbd "C-c C-/") 'comment-line);快速注释
 (global-set-key (kbd "C-<f5>") 'run-program)
+(global-set-key (kbd "C-c DEL") 'kill-whole-line)
 
 ;; 模式快捷键
 (add-hook 'prog-mode-hook #'hs-minor-mode)
