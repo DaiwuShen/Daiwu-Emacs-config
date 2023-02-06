@@ -1,10 +1,18 @@
 ;;; pakage --- summary
 ;;; Commentary:
 ;;; Code:
+;;; *************************************************
+;;;	> Filename        :	init-packages.el
+;;;	> Description     :	emacs包管理
+;;;	> Creat time      :	2023-02-05 10:58
+;;;	> Last modified   :	2023-02-06 12:01
+;;;	> Author          :	Daiwu Shen
+;;;	> Email           :	shendaiwu@163.com
+;;; *************************************************
 ;;;;---------------------------------基础配置------------------------------------------
 (use-package electric-pair-mode
   :ensure nil
-  :hook((text-mode prog-mode) . electric-pair-mode))
+  :hook(after-init . electric-pair-mode))
 
 (use-package show-paren-mode
   :ensure nil
@@ -20,7 +28,7 @@
 
 (use-package delete-selection-mode
   :ensure nil
-  :hook((text-mode prog-mode) . delete-selection-mode))
+  :hook(after-init . delete-selection-mode))
 
 (use-package global-display-line-numbers-mode
   :ensure nil
@@ -83,11 +91,14 @@
   :hook (prog-mode . which-function-mode))
 
 ;;;;----------------------------------用户包-----------------------------------
-;;; 功能优化
 ;;;;---------------------------------minibuffer增强----------------------------
+;; marginalia---minibuffer注解增强
+(use-package marginalia
+  :hook(minibuffer-mode . marginalia-mode))
+
 ;; vertico---minibuffer补全
 (use-package vertico
-  :hook(minibuffer-mode . vertico-mode))
+  :hook(after-init . vertico-mode))
 
 ;; embark---minibuffer行为增强
 (use-package embark
@@ -109,10 +120,6 @@
   :init
   (setq completion-styles '(orderless)))
 
-;; marginalia---minibuffer注解增强
-(use-package marginalia
-  :hook(minibuffer-mode . marginalia-mode))
-
 ;;;;-------------------------------------实用工具---------------------------------
 ;; which-key-mode
 (use-package which-key
@@ -121,13 +128,14 @@
 
 ;; format-all
 (use-package format-all
-  :hook(save-buffer . format-all-buffer)
+  :hook(before-save . format-all-buffer)
   :bind
   (:map prog-mode-map("C-c f b" . format-all-buffer)))
 
 ;; iedit---多点编辑
 (use-package iedit
-  :bind(("C-;" . iedit-mode)))
+  :bind(("C-<f2>" . iedit-mode)
+	("C-c <f2>" . iedit-mode-toggle-on-function)))
 
 ;; 文件树
 (use-package treemacs
@@ -138,8 +146,7 @@
   (:map global-map
 	("C-1" . treemacs-select-window)
 	("C-c t t" . treemacs)
-	("C-c t d" . treemacs-select-directory)
-	)
+	("C-c t d" . treemacs-select-directory))
   (:map treemacs-mode-map
 	("/" . treemacs-advanced-helpful-hydra)))
 
@@ -148,23 +155,11 @@
   :bind (("C-c p" . projectile-command-map))
   :config
   (setq projectile-track-known-projects-automatically nil
-	projectile-enable-caching t)
-  )
+	projectile-enable-caching t))
 
 ;;
 (use-package treemacs-projectile
   :after (treemacs projectile))
-
-;; (use-package imenu-list
-;;   :config
-;;   (setq imenu-list-size 50
-;; 	imenu-list-auto-update t
-;; 	imenu-list-auto-resize t
-;; 	imenu-list-position 'left)
-;;   :bind
-;;   (:map global-map
-;; 	("C-c i i" . imenu-list-smart-toggle)
-;; 	))
 
 ;;;;-----------------------------------github-------------------------------------
 ;; git
@@ -175,17 +170,16 @@
 (use-package dashboard
   :defer nil
   :config
-  (setq dashboard-banner-logo-title "Welcom to Emacs!");个性签名
-  (setq dashboard-projects-backend 'projectile)
-  (setq dashboard-startup-banner 'official);自定义图片
-  (setq dashboard-items '((recents . 10)
-			  (bookmarks . 10)
-			  (projects . 5)))
-  (dashboard-setup-startup-hook))
-
-;; powerline
-(use-package powerline
-  :init (powerline-default-theme))
+  (setq dashboard-banner-logo-title "Happy Hacking!";个性签名
+	dashboard-projects-backend 'projectile
+	dashboard-startup-banner 'official;自定义图片
+	dashboard-items '((recents . 5)
+			  (bookmarks . 5)
+			  (projects . 5)
+			  (agenda . 5)
+			  (registers . 5)))
+  :init (dashboard-setup-startup-hook)
+  )
 
 ;;;;------------------------------------补全相关---------------------------------------
 ;; company
@@ -197,10 +191,12 @@
 	company-idle-delay 0.0
 	company-show-quick-access t ;; 给选项编号 (按快捷键 M-1、M-2 等等来进行选择).
 	company-selection-wrap-around t
-	company-transformers '(company-sort-by-occurrence)
-	)) ; 根据选择的频率进行排序
-
-;; yasnippet
+	company-transformers '(company-sort-by-occurrence)) ; 根据选择的频率进行排序
+  :bind
+  (:map company-active-map
+	("<tab>" . company-complete-common-or-cycle)
+	("C-h" . company-show-doc-buffer)))
+;; yasnippet---提示代码片段
 (use-package yasnippet
   :hook
   (prog-mode . yas-minor-mode)
@@ -211,10 +207,7 @@
 	backend
       (append (if (consp backend) backend (list backend))
               '(:with company-yasnippet))))
-  (setq company-backends (mapcar 'company-mode/backend-with-yas company-backends))
-  ;; unbind <TAB> completion
-  :bind
-  (:map yas-minor-mode-map ("S-<tab>" . yas-expand)))
+  (setq company-backends (mapcar 'company-mode/backend-with-yas company-backends)))
 
 ;; yasnippet-snippets
 (use-package yasnippet-snippets
@@ -223,7 +216,6 @@
 ;; lsp
 (use-package lsp-mode
   :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l"
 	lsp-file-watch-threshold 500)
   :hook
@@ -239,11 +231,10 @@
   :config
   (define-key lsp-ui-mode-map [remap xref-find-definitions] 'lsp-ui-peek-find-definitions)
   (define-key lsp-ui-mode-map [remap xref-find-references] 'lsp-ui-peek-find-references)
-  (setq lsp-ui-doc-position 'top))
+  (setq lsp-ui-doc-position 'at-point)
+  :hook(prog-mode . lsp-ui-mode))
 
-(use-package lsp-treemacs
-  :after (treemacs lsp))
-
+;; 语法检查
 (use-package flycheck
   :config
   (setq truncate-lines nil)
